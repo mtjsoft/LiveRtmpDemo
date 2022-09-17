@@ -3,6 +3,7 @@ package cn.mtjsoft.www.livertmpdemo
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
@@ -23,8 +24,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //保持亮屏
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        intent?.apply {
+            val rtmp = getStringExtra("rtmp")
+            if (rtmp != null && rtmp.isNotEmpty()) {
+                PushLiveUtil.init.rtmp = rtmp
+            }
+        }
         preview()
     }
 

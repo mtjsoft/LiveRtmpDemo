@@ -42,11 +42,19 @@ class HomeActivity : AppCompatActivity() {
 
         binding.apply {
             btnCamera2.setOnClickListener {
-                startActivity(Intent(this@HomeActivity, LiveActivity::class.java))
+                startActivity(Intent(this@HomeActivity, LiveActivity::class.java).apply {
+                    putExtra("rtmp", getRTMP())
+                })
             }
             btnCameraX.setOnClickListener {
-                startActivity(Intent(this@HomeActivity, MainActivity::class.java))
+                startActivity(Intent(this@HomeActivity, MainActivity::class.java).apply {
+                    putExtra("rtmp", getRTMP())
+                })
             }
         }
+    }
+
+    private fun getRTMP():String {
+        return binding.etRtmp.text.toString().trim()
     }
 }

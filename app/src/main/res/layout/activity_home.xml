@@ -7,6 +7,14 @@
     android:gravity="center"
     android:orientation="vertical">
 
+    <EditText
+        android:id="@+id/et_rtmp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="RTMP推流地址"
+        android:padding="10dp"
+        android:layout_marginBottom="20dp"/>
+
 
     <Button
         android:id="@+id/btn_camera2"

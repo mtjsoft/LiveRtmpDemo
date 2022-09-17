@@ -15,7 +15,7 @@ class PushLiveUtil {
 
     // 推流rtmp地址
 //    private var rtmp = "rtmp://192.168.31.165:8035/live/home"
-    private var rtmp =
+    var rtmp =
         "rtmp://live-push.bilivideo.com/live-bvc/??streamname=live_491889741_1951543&key=e4cec58df064330165bde8357db13ed6&schedule=rtmp&pflag=1"
 
     // 视频

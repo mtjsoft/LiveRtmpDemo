@@ -28,7 +28,7 @@ import com.frank.live.param.VideoParam;
 public class LiveActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener, LiveStateChangeListener {
 
     private final static String TAG = LiveActivity.class.getSimpleName();
-    private final static String LIVE_URL = "rtmp://live-push.bilivideo.com/live-bvc/??streamname=live_491889741_1951543&key=e4cec58df064330165bde8357db13ed6&schedule=rtmp&pflag=1";
+    private static String LIVE_URL = "rtmp://live-push.bilivideo.com/live-bvc/??streamname=live_491889741_1951543&key=e4cec58df064330165bde8357db13ed6&schedule=rtmp&pflag=1";
     private final static int MSG_ERROR = 100;
     private SurfaceView textureView;
     private LivePusherNew livePusher;
@@ -60,6 +60,12 @@ public class LiveActivity extends BaseActivity implements CompoundButton.OnCheck
             WindowManager.LayoutParams attributes = getWindow().getAttributes();
             attributes.systemUiVisibility = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
             getWindow().setAttributes(attributes);
+        }
+        if (getIntent().hasExtra("rtmp")) {
+            String rtmp = getIntent().getStringExtra("rtmp");
+            if (!TextUtils.isEmpty(rtmp)) {
+                LIVE_URL = rtmp;
+            }
         }
         hideActionBar();
         initView();
