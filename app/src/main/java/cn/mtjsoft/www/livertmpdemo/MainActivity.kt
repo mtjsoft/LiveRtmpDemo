@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
             .setOutputImageRotationEnabled(true)
             .build()
-        imageAnalysis.setAnalyzer(threadPoolExecutor) { imageProxy ->
+        imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this)) { imageProxy ->
             try {
                 if (imageProxy.image != null && isStartLive) {
                     val nv21 = ImageUtil.yuv420ThreePlanesToNV21(

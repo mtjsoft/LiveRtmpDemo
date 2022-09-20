@@ -1,7 +1,6 @@
 package com.frank.live;
 
 import android.app.Activity;
-import android.hardware.Camera;
 import android.view.SurfaceHolder;
 import android.view.TextureView;
 
@@ -10,9 +9,7 @@ import com.frank.live.listener.LiveStateChangeListener;
 import com.frank.live.param.AudioParam;
 import com.frank.live.param.VideoParam;
 import com.frank.live.stream.AudioStream;
-import com.frank.live.stream.CameraHelper;
 import com.frank.live.stream.VideoStream;
-import com.frank.live.stream.VideoStreamNew;
 
 public class LivePusherNew {
 
@@ -41,10 +38,7 @@ public class LivePusherNew {
 
     private LiveStateChangeListener liveStateChangeListener;
 
-    private Activity activity;
-
     public LivePusherNew(Activity activity, VideoParam videoParam, AudioParam audioParam) {
-        this.activity = activity;
         native_init();
         videoStream = new VideoStream(this, activity, videoParam.getWidth(), videoParam.getHeight(),
                 videoParam.getBitRate(), videoParam.getFrameRate(), videoParam.getCameraId());
@@ -58,11 +52,15 @@ public class LivePusherNew {
     }
 
     public void setPreviewDisplay(SurfaceHolder surfaceHolder) {
-        videoStream.setPreviewDisplay(surfaceHolder);
+        if (videoStream != null) {
+            videoStream.setPreviewDisplay(surfaceHolder);
+        }
     }
 
     public void switchCamera() {
-        videoStream.switchCamera();
+        if (videoStream != null) {
+            videoStream.switchCamera();
+        }
     }
 
     /**
@@ -71,7 +69,9 @@ public class LivePusherNew {
      * @param isMute is mute or not
      */
     public void setMute(boolean isMute) {
-        audioStream.setMute(isMute);
+        if (audioStream != null) {
+            audioStream.setMute(isMute);
+        }
     }
 
     public void setLiveStateChangeListener(LiveStateChangeListener liveStateChangeListener) {
@@ -81,19 +81,24 @@ public class LivePusherNew {
     public void startPush(String path, LiveStateChangeListener stateChangeListener) {
         this.liveStateChangeListener = stateChangeListener;
         native_start(path);
-        videoStream.startLive();
-        audioStream.startLive();
+        if (videoStream != null) {
+            videoStream.startLive();
+        }
+        if (audioStream != null) {
+            audioStream.startLive();
+        }
     }
 
     public void setCameraListener(CameraListener cameraListener) {
-        videoStream.setCameraListener(cameraListener);
+        if (videoStream != null) {
+            videoStream.setCameraListener(cameraListener);
+        }
     }
 
     /**
      * 自定义
      */
-    public LivePusherNew(Activity activity, String path, VideoParam videoParam, AudioParam audioParam, LiveStateChangeListener liveStateChangeListener) {
-        this.activity = activity;
+    public LivePusherNew(String path, VideoParam videoParam, AudioParam audioParam, LiveStateChangeListener liveStateChangeListener) {
         this.liveStateChangeListener = liveStateChangeListener;
         native_init();
         setVideoCodecInfo(videoParam.getWidth(), videoParam.getHeight(), videoParam.getFrameRate(), videoParam.getBitRate());
@@ -103,11 +108,18 @@ public class LivePusherNew {
 
     public void startLive(byte[] data) {
         pushVideo(data);
-        audioStream.startLive();
+        if (audioStream != null) {
+            audioStream.startLive();
+        }
     }
 
     public void stopLive() {
-        audioStream.stopLive();
+        if (videoStream != null) {
+            videoStream.stopLive();
+        }
+        if (audioStream != null) {
+            audioStream.stopLive();
+        }
         native_stop();
     }
 
@@ -116,14 +128,22 @@ public class LivePusherNew {
      */
 
     public void stopPush() {
-        videoStream.stopLive();
-        audioStream.stopLive();
+        if (videoStream != null) {
+            videoStream.stopLive();
+        }
+        if (audioStream != null) {
+            audioStream.stopLive();
+        }
         native_stop();
     }
 
     public void release() {
-        videoStream.release();
-        audioStream.release();
+        if (videoStream != null) {
+            videoStream.release();
+        }
+        if (audioStream != null) {
+            audioStream.release();
+        }
         native_release();
     }
 
@@ -135,29 +155,29 @@ public class LivePusherNew {
     public void errorFromNative(int errCode) {
         //stop pushing stream
         stopPush();
-        if (liveStateChangeListener != null && activity != null) {
+        if (liveStateChangeListener != null) {
             String msg = "";
             switch (errCode) {
                 case ERROR_VIDEO_ENCODER_OPEN:
-                    msg = activity.getString(R.string.error_video_encoder);
+                    msg = "打开视频编码器失败";
                     break;
                 case ERROR_VIDEO_ENCODE:
-                    msg = activity.getString(R.string.error_video_encode);
+                    msg = "视频编码失败";
                     break;
                 case ERROR_AUDIO_ENCODER_OPEN:
-                    msg = activity.getString(R.string.error_audio_encoder);
+                    msg = "打开音频编码器失败";
                     break;
                 case ERROR_AUDIO_ENCODE:
-                    msg = activity.getString(R.string.error_audio_encode);
+                    msg = "音频编码失败";
                     break;
                 case ERROR_RTMP_CONNECT:
-                    msg = activity.getString(R.string.error_rtmp_connect);
+                    msg = "RTMP连接服务器失败";
                     break;
                 case ERROR_RTMP_CONNECT_STREAM:
-                    msg = activity.getString(R.string.error_rtmp_connect_strem);
+                    msg = "RTMP连接流失败";
                     break;
                 case ERROR_RTMP_SEND_PACKET:
-                    msg = activity.getString(R.string.error_rtmp_send_packet);
+                    msg = "RTMP发送数据包失败";
                     break;
                 default:
                     break;
